@@ -8,8 +8,10 @@ const createBooking = async (req, res) => {
         const booking = new Booking(req.body);
 
         const qrData = `
-            User: ${req.body.user}
-            Event: ${req.body.event}
+Event: ${req.body.event}
+Participants: ${req.body.participants}
+Amount Paid: ₹${req.body.totalAmount}
+Status: Confirmed
         `;
 
         const qrCode = await QRCode.toDataURL(qrData);
@@ -39,7 +41,29 @@ const getUserBookings = async (req, res) => {
 
         const bookings = await Booking.find({
             user: req.params.userId
-        }).populate("event");
+        })
+        .populate("event")
+        .populate("user");
+
+        res.json(bookings);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+
+const getAllBookings = async (req, res) => {
+
+    try {
+
+        const bookings = await Booking.find()
+            .populate("user")
+            .populate("event");
 
         res.json(bookings);
 
@@ -55,5 +79,6 @@ const getUserBookings = async (req, res) => {
 
 module.exports = {
     createBooking,
-    getUserBookings
+    getUserBookings,
+    getAllBookings
 };

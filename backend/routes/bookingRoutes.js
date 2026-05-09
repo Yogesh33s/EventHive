@@ -3,11 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    createBooking
-} = require("../controllers/bookingController");
-
-const {
-    getUserBookings
+    getUserBookings,
+    getAllBookings
 } = require("../controllers/bookingController");
 
 const Booking = require("../models/Booking");
@@ -21,8 +18,10 @@ router.post("/create", async (req, res) => {
         const booking = new Booking(req.body);
 
         const qrData = `
-            User: ${req.body.user}
-            Event: ${req.body.event}
+Event: ${req.body.event}
+Participants: ${req.body.participants}
+Amount Paid: ₹${req.body.totalAmount}
+Status: Confirmed
         `;
 
         const qrCode = await QRCode.toDataURL(qrData);
@@ -47,5 +46,7 @@ router.post("/create", async (req, res) => {
 });
 
 router.get("/user/:userId", getUserBookings);
+
+router.get("/", getAllBookings);
 
 module.exports = router;

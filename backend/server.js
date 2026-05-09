@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");
+
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -9,7 +9,12 @@ const bookingRoutes = require("./routes/bookingRoutes");
 
 const app = express();
 
-app.use(cors());
+const cors = require("cors");
+
+app.use(cors({
+  origin: "https://event-hive-ten-beige.vercel.app",
+  credentials: true
+}));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

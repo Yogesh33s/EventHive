@@ -12,6 +12,8 @@ function Home() {
 
     const [events, setEvents] = useState([]);
 
+    const [successMessage, setSuccessMessage] = useState("");
+
     useEffect(() => {
 
         fetchEvents();
@@ -34,21 +36,41 @@ function Home() {
 
     };
 
-    const handleBooking = async (eventId) => {
+    const handleBooking = async (event) => {
 
         try {
 
-            const userId = prompt("Enter User ID");
+            const participants = prompt("Enter number of participants");
+
+            if (!participants) return;
+
+            const totalAmount = event.ticketPrice * participants;
+
+            const confirmBooking = window.confirm(
+                `Total Amount: ₹${totalAmount}\nConfirm Booking?`
+            );
+
+            if (!confirmBooking) return;
 
             const response = await API.post(
                 "/bookings/create",
                 {
-                    user: userId,
-                    event: eventId
+                    user: user._id,
+                    event: event._id,
+                    participants,
+                    totalAmount
                 }
             );
 
-            alert(response.data.message);
+            setSuccessMessage(response.data.message);
+
+            setTimeout(() => {
+
+                setSuccessMessage("");
+
+                navigate("/my-bookings");
+
+            }, 2000);
 
         } catch (error) {
 
@@ -71,6 +93,18 @@ function Home() {
     return (
 
         <div className="min-h-screen bg-black text-white p-10">
+
+            {
+                successMessage && (
+
+                    <div className="fixed top-5 right-5 bg-green-500 text-black px-6 py-3 rounded-xl font-bold shadow-lg z-50">
+
+                        {successMessage}
+
+                    </div>
+
+                )
+            }
 
             <div className="flex justify-between items-center mb-10">
 
@@ -139,7 +173,7 @@ function Home() {
                             </p>
 
                             <button
-                                onClick={() => handleBooking(event._id)}
+                                onClick={() => handleBooking(event)}
                                 className="mt-6 bg-cyan-500 hover:bg-cyan-600 px-5 py-2 rounded-xl text-black font-bold"
                             >
                                 Book Ticket

@@ -92,7 +92,19 @@ function Home() {
 
             await API.delete(`/events/${eventId}`);
 
-            fetchEvents();
+            setEvents(
+                events.filter(
+                    (event) => event._id !== eventId
+                )
+            );
+
+            setSuccessMessage("Event deleted successfully");
+
+            setTimeout(() => {
+
+                setSuccessMessage("");
+
+            }, 2000);
 
         } catch (error) {
 
@@ -136,6 +148,14 @@ function Home() {
             });
 
             fetchEvents();
+
+            setSuccessMessage("Event updated successfully");
+
+            setTimeout(() => {
+
+                setSuccessMessage("");
+
+            }, 2000);
 
         } catch (error) {
 
@@ -228,16 +248,16 @@ function Home() {
 
                                         <button
                                             onClick={() => handleEdit(event)}
-                                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-lg font-bold"
+                                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-1 rounded-lg font-bold"
                                         >
-                                            ✏
+                                            Edit
                                         </button>
 
                                         <button
                                             onClick={() => handleDelete(event._id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg font-bold"
+                                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg font-bold"
                                         >
-                                            🗑
+                                            Delete
                                         </button>
 
                                     </div>

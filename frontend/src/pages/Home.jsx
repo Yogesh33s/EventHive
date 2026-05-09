@@ -80,6 +80,71 @@ function Home() {
 
     };
 
+    const handleDelete = async (eventId) => {
+
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this event?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+
+            await API.delete(`/events/${eventId}`);
+
+            fetchEvents();
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+
+    const handleEdit = async (event) => {
+
+        const title = prompt(
+            "Edit Event Title",
+            event.title
+        );
+
+        if (!title) return;
+
+        const description = prompt(
+            "Edit Description",
+            event.description
+        );
+
+        const location = prompt(
+            "Edit Location",
+            event.location
+        );
+
+        const ticketPrice = prompt(
+            "Edit Ticket Price",
+            event.ticketPrice
+        );
+
+        try {
+
+            await API.put(`/events/${event._id}`, {
+                title,
+                description,
+                location,
+                ticketPrice
+            });
+
+            fetchEvents();
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+
     const handleLogout = () => {
 
         localStorage.removeItem("token");
@@ -153,8 +218,32 @@ function Home() {
 
                         <div
                             key={event._id}
-                            className="bg-gray-900 border border-cyan-500 rounded-2xl p-6 shadow-lg hover:scale-105 transition"
+                            className="relative bg-gray-900 border border-cyan-500 rounded-2xl p-6 shadow-lg hover:scale-105 transition"
                         >
+
+                            {
+                                user?.role === "organizer" && (
+
+                                    <div className="absolute top-4 right-4 flex gap-3">
+
+                                        <button
+                                            onClick={() => handleEdit(event)}
+                                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-lg font-bold"
+                                        >
+                                            ✏
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDelete(event._id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg font-bold"
+                                        >
+                                            🗑
+                                        </button>
+
+                                    </div>
+
+                                )
+                            }
 
                             <h2 className="text-3xl font-bold text-cyan-300 mb-4">
                                 {event.title}

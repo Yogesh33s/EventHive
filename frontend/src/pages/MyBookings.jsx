@@ -17,21 +17,21 @@ function MyBookings() {
 
     const fetchBookings = async () => {
 
-        try {
+    try {
 
-            const response = await API.get(
-                `/bookings/user/${user._id}`
-            );
+        const response = user?.role === "organizer"
+            ? await API.get("/bookings/all")
+            : await API.get(`/bookings/user/${user._id}`);
 
-            setBookings(response.data);
+        setBookings(response.data);
 
-        } catch (error) {
+    } catch (error) {
 
-            console.log(error);
+        console.log(error);
 
-        }
+    }
 
-    };
+};
 
     return (
 
